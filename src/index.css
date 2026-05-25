@@ -4,9 +4,44 @@
 @theme {  
   --color-bg: #e0e0e0;
   --color-bar: #FFCD04 0.8;
+  --color-text: #FFCD04 ;
   --color-shadow-light: #ffffff;
   --color-shadow-dark: rgba(0, 0, 0, 0.25);
   --shadow-convex : 6px 6px 12px var(--color-shadow-dark), -6px -6px 12px var(--color-shadow-light);
   --shadow-convex-sm : 2px 2px 2px var(--color-shadow-dark), -2px -2px 2px var(--color-shadow-light);
   --shadow-concave : inset 6px 6px 12px var(--color-shadow-dark), inset -6px -6px 12px var(--color-shadow-light);
+}
+
+@utility text-apple {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 3.5rem;
+  font-weight: 200;      
+  color: rgba(255, 193, 7, 1);         
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+@utility text-apple-sm {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.5rem;
+  font-weight: 200;      
+  color: rgba(255, 193, 7, 1);         
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+@utility text-gauge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(30, 41, 59, 0.9);
+  letter-spacing: -0.05em;
+}
+
+@utility text-gauge-sm {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba(30, 41, 59, 0.9);
+  letter-spacing: -0.05em;
 }

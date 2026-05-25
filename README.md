@@ -10,13 +10,15 @@ An interactive, high-fidelity replication of a stunning Neomorphic weather dashb
 
 ---
 
-## 🛠️ Tech Stack & Tools
+## 🛠️ Tech Stack & Architecture
 
-* **Reference Concept**: Neomorphic Weather UI (Found online)
-* **Framework**: React + TypeScript (TSX)
-* **Styling**: Tailwind CSS
-* **Icons**: Lucide React
-* **Build Tool**: Vite
+This project is built as a unified **Next.js Full-Stack Application** utilizing the modern App Router.
+
+* **Frontend Framework:** React 19 (Client-side state & Geolocation API)
+* **Backend Runtime:** Next.js API Routes 
+* **Styling & UI:** Tailwind CSS v4
+* **Design Inspiration:** Neomorphic Weather UI concept
+
 
 ---
 
