@@ -27,8 +27,8 @@ export default function App() :React.JSX.Element {
             })
             .then(response => response.json())
             .then(data => {
-                if (data.temp !== undefined) {
-                    setTemp(data.temp);
+                if (data.temperature !== undefined) {
+                    setTemp(data.temperature);
                     setCity(data.city);
                 } else {
                     console.error("Temperature data is missing in the response:", data);
@@ -67,11 +67,11 @@ export default function App() :React.JSX.Element {
                     <div className="text-center text-gauge-sm">
                         {city}
                     </div>
-                    
                 </div>
             </div>
           </div>
         </div>
+        
         <div className="flex flex-col items-center justify-center w-[180px] h-[100] rounded-3xl bg-bg shadow-convex">
               <div className="text-2xl font-bold text-center text-gauge"> location  </div>
               {
@@ -88,6 +88,8 @@ export default function App() :React.JSX.Element {
                 )
               }
         </div>
+
+    
       </div>
   )
 }
