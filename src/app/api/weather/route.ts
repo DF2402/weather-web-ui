@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 const STATIONS_COORDS = {
     "香港天文台": {"lat": 22.3022, "lon": 114.1742, "district": "油尖旺"},
     "京士柏": {"lat": 22.3119, "lon": 114.1728, "district": "油尖旺"},
@@ -38,6 +39,8 @@ interface WeatherData {
     uvindex: number;
     city: string;
     warningMessage ?: string;
+    forecast ?: any;
+    icon ?: string;
 }
 function findNearestStation(lat: number, lon: number) {
     let nearestStation = null;
@@ -72,7 +75,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const lat = searchParams.get('lat');
     const lon = searchParams.get('lon');
-
+    let data: WeatherData;
     if (!lat || !lon) {
         return NextResponse.json({ error: 'Missing lat or lon parameters' }, { status: 400 });
     }
@@ -82,7 +85,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'No nearby weather station found' }, { status: 404 });
     }
 
-    const params = new URLSearchParams({
+    let  params = new URLSearchParams({
         dataType: 'rhrread',
         lang: 'tc'
     });
@@ -106,32 +109,72 @@ export async function GET(request: NextRequest) {
         );
         const rainfall = rainfallEntry ? rainfallEntry.max : 0;
 
-let uvindex = 0;
-if (rawData.uvindex && typeof rawData.uvindex === 'object' && rawData.uvindex.data) {
-    uvindex = rawData.uvindex.data[0]?.value || 0;
-} else {
-    uvindex = 0; 
-}
+        const iconidx = rawData.icon;
+        let iconBase64 = "" ;
+        console.log("Raw weather data:", iconidx);  
+        try {
+            if (iconidx !== undefined) {
+                const url = `https://www.hko.gov.hk/images/HKOWxIconOutline/pic${iconidx}.png`;
+                console.log("Fetching weather icon from URL:", url);
+                const iconResponse = await fetch(url);
+                if (iconResponse.ok) {
+                    const arrayBuffer = await iconResponse.arrayBuffer();
+                    const buffer = Buffer.from(arrayBuffer);
+                    iconBase64 = buffer.toString('base64');
+                    
+                }
 
+            }
+        }
+        catch (error) {
+            console.error("Error fetching weather icon:", error);
+        }
 
-        if (temperature === null) {
-            return NextResponse.json({ error: ` [${tempStation}] data missing` }, { status: 404 });
-        }   
-
-        const data: WeatherData = {
-            temperature: temperature,
-            humidity: humidity,
-            rainfall: rainfall,
-            uvindex: uvindex,
-            city: tempStation
-        };
-        console.log("Fetched weather data:", data);
-
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error("Error fetching weather data:", error);
-        return NextResponse.json({ error: 'Failed to fetch weather data' }, { status: 500 });
+    let uvindex = 0;
+    if (rawData.uvindex && typeof rawData.uvindex === 'object' && rawData.uvindex.data) {
+        uvindex = rawData.uvindex.data[0]?.value || 0;
+    } else {
+        uvindex = 0; 
     }
 
-    
+
+            if (temperature === null) {
+                return NextResponse.json({ error: ` [${tempStation}] data missing` }, { status: 404 });
+            }   
+
+            data = {
+                temperature: temperature,
+                humidity: humidity,
+                rainfall: rainfall,
+                uvindex: uvindex,
+                city: tempStation,
+                icon: iconBase64 || ""
+            };
+
+        } catch (error) {
+            console.error("Error fetching weather data:", error);
+            return NextResponse.json({ error: 'Failed to fetch weather data' }, { status: 500 });
+        }
+
+        params = new URLSearchParams({
+            dataType: 'flw',
+            lang: 'tc'
+        });
+
+
+        try {        const response = await fetch(`https://data.weather.gov.hk/weatherAPI/opendata/weather.php?${params.toString()}`);
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+            
+            const forecastData = await response.json();
+            const forecastEntry = forecastData.generalSituation;
+            console.log(" Fetched forecast data:", forecastEntry);
+            data.forecast = forecastEntry;
+            return NextResponse.json(data);
+        }
+        catch (error) {
+            console.error("Error fetching forecast data:", error);
+            return NextResponse.json({ error: 'Failed to fetch forecast data' }, { status: 500 });
+        }
 }

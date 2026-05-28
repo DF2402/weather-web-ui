@@ -31,7 +31,7 @@
 }
 
 @utility text-gauge {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 1rem;
   font-weight: 700;
   color: rgba(30, 41, 59, 0.9);
@@ -39,10 +39,17 @@
 }
 
 @utility text-gauge-sm {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 0.875rem;
   font-weight: 700;
   color: rgba(30, 41, 59, 0.9);
   letter-spacing: -0.05em;
 }
 
+@utility text-inter {
+  font-family: inter;
+  font-size: 2 rem;
+  font-weight: 700;
+  color:#000000;
+  letter-spacing: -0.05em;
+}

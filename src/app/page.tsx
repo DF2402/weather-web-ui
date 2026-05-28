@@ -3,9 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { useLocationContext } from './context/locationContext';
 
 export default function App() :React.JSX.Element {
-  const [temp, setTemp] = useState(50)
+  const [temperature , setTemperature] = useState(50)
+  const [humidity, setHumidity] = useState(0);
   const [city, setCity] = useState("unknown")
   const { coordinates, loading } = useLocationContext();
+  const [forecast, setForecast] = useState<string>("");
+  const [icon, setIcon] = useState<string>("");
  
   function tempToBar(temp: number): number {
     const minTemp = -30; 
@@ -27,9 +30,13 @@ export default function App() :React.JSX.Element {
             })
             .then(response => response.json())
             .then(data => {
-                if (data.temperature !== undefined) {
-                    setTemp(data.temperature);
+              console.log("Received weather data:", data);
+                if (data !== undefined) {
+                    setTemperature(data.temperature);
+                    setHumidity(data.humidity);
                     setCity(data.city);
+                    setForecast(data.forecast || "No forecast available");
+                    setIcon(data.icon || "");
                 } else {
                     console.error("Temperature data is missing in the response:", data);
                 }
@@ -45,17 +52,13 @@ export default function App() :React.JSX.Element {
   return(
     <div className="flex w-full min-h-screen justify-center bg-bg "> 
 
-      <div className=' grid grid-rows-8 w-full max-w-[2400px] gap-8 p-10 '>  
+      <div className=' flex flex-col w-full max-w-[2400px] gap-8 p-10 '>  
 
         <div className="row-span-1 w-full h-[152px] rounded-3xl bg-bg shadow-convex">
 
-          <div className='flex flex-col justify-between p-2' >
+          <div className='className="flex flex-col items-start justify-start w-full h-full gap-4 p-4' >
 
-            <div className="flex items-center justify-center w-[100px] h-[40px] rounded-full shadow-concave gap-4">
-
-              <div className="text-gauge"> 天氣警報</div>
-
-            </div>
+            <span className="text-2xl rounded-full font-bold text-center text-gauge shadow-concave py-2 px-4"> 天氣預報 </span>
 
             <div id="warning=" className="flex items-center justify-start gap-4 p-4">
               <img src="https://www.hko.gov.hk/images/HKOWarningSymbols/warn800_20_hot.png" alt="warning" className="w-[70px] h-[70px]" />
@@ -66,11 +69,38 @@ export default function App() :React.JSX.Element {
 
         </div>
 
-        <div id="" className="grid grid-cols-3 row-span-4 w-full  gap-8  "> 
+        <div id="" className="flex flex-col lg:flex-row  gap-8 p-10 w-full "> 
 
-          <div id="left column " className="col-span-2 grid grid-row-2 gap-8">
+          <div id="left column " className="flex-grow flex flex-col gap-8">
 
-            <div className=" items-center justify-center w-full h-[480px] rounded-3xl bg-bg shadow-convex ">
+            <div className="flex flex-col items-end justify-start w-full h-[480px] rounded-3xl bg-bg shadow-convex gap-4 p-4">
+              <div id="header" className='text-2xl rounded-full font-bold text-center text-gauge shadow-concave py-2 px-4'>分區天氣</div>
+
+              <div id ="content group" className="flex flex-row items-end justify-start w-full h-full">
+                <div className="flex flex-col ">
+                
+                  
+                
+               
+                  <div id ="content row" className="flex items-start justify-start w-full h-full gap-4 p-4">
+                    <span className=" text-2xl font-bold text-center text-gauge "> {city} </span>
+                    
+                  </div>
+                  <div id ="content group" className="flex flex-col items-start justify-start w-full h-full gap-4 p-4">
+                    <span className=" text-8xl font-bold text-center text-inter "> {temperature.toFixed(1)}°C </span>
+                    <span className=" text-8xl font-bold text-center text-inter "> {humidity }% </span>
+                      
+                      
+                  </div>
+                </div>
+
+                  <div id ="content row" className="flex flex-row items-start justify-end w-full h-full gap-4 p-4">
+                    <img src={`data:image/png;base64,${icon}`} className=" w-[300px] h-[300px]" />
+                  </div>
+              
+              
+                  
+              </div>
                 
             </div>
 
@@ -82,13 +112,20 @@ export default function App() :React.JSX.Element {
             
           </div>
 
-          <div id="right column" className="grid grid-row-2 w-full gap-8 ">
+          <div id="right column" className="lg:w-[350px] flex flex-col gap-8 ">
 
               <div className=" items-center justify-center w-full h-[280px] rounded-3xl bg-bg shadow-convex ">
 
             </div>
 
-              <div className="items-center justify-center w-full h-[400px] rounded-3xl bg-bg shadow-convex ">
+              <div className="items-center justify-center w-full  rounded-3xl bg-bg shadow-convex ">
+                <div id ="content group" className="flex flex-col items-start justify-start w-full h-full gap-4 p-4">
+                    <span className="text-2xl rounded-full font-bold text-center text-gauge shadow-concave py-2 px-4"> 天氣預報 </span>
+                    <div className="flex items-center justify-start gap-4 p-4">
+                    <span className=" text-2xl font-bold text-center text-gauge "> {forecast} </span>
+                    </div>
+
+                </div>
                   
               </div>
 
